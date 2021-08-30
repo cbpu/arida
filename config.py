@@ -17,11 +17,11 @@ INJECTION_APPS = [
         "path": "meituanwaimai",
         "package_name": "com.sankuai.meituan.takeoutnew"
     },
-    {
-        "name": "饿了么",
-        "path": "elm",
-        "package_name": "me.ele"
-    },
+#     {
+#         "name": "饿了么",
+#         "path": "elm",
+#         "package_name": "me.ele"
+#     },
     {
         "name": "大众点评",
         "path": "dianping",

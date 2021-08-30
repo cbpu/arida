@@ -13,3 +13,14 @@ RUN apt-get install -y git-core
 RUN git clone https://github.com/cbpu/hooker.git
 WORKDIR hooker
 RUN pip3 install -r requirements.txt
+
+WORKDIR /
+RUN git clone https://github.com/cbpu/arida.git
+WORKDIR arida
+RUN pip3 install -r requirements.txt
+
+RUN apt-get install -y nodejs && apt-get install -y npm
+
+ADD start.sh start.sh
+ENV DEVICE;
+ENTRYPOINT["/arida/start.sh","$DEVICE"]
