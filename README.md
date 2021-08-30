@@ -25,7 +25,8 @@ Do By You Self！
 
 ## 实现原理
 
-`Python`执行`PyexecJs`通过`Js的AST树`结构获取`Frida-Js`脚本中`rpc.exports`的方法以及对应方法的参数个数，根据方法名和参数个数通过`types.FunctionDef`从`Python AST字节码`来动态生成新的`Function对象`，并且结合`pydantic`的`create_model`自动生成的参数模型注册到`FastAPI的路由系统`中，实现`Frida-RPC`的功能。
+`Python`执行`PyexecJs`通过`Js的AST树`结构获取`Frida-Js`脚本中`rpc.exports`的方法以及对应方法的参数个数，根据方法名和参数个数通过`types.FunctionDef`
+从`Python AST字节码`来动态生成新的`Function对象`，并且结合`pydantic`的`create_model`自动生成的参数模型注册到`FastAPI的路由系统`中，实现`Frida-RPC`的功能。
 
 ## 工作流程
 
@@ -56,6 +57,7 @@ Do By You Self！
 
 2. watch 127.0.0.1:8000/docs 
 ```
+
 eg:
 
 ![生成的fastapi的api结构图](https://github.com/lateautumn4lin/arida/blob/master/source/fastapi_docs.png)
@@ -79,6 +81,7 @@ uvicorn main:app --reload
 
 2. https://www.wandoujia.com/apps/7666802
 ```
+
 eg:
 
 ![测试图](https://github.com/lateautumn4lin/arida/blob/master/source/test.png)
@@ -91,7 +94,7 @@ eg:
 
 3. https://zhuanlan.zhihu.com/p/103665038（python字节码）
 
-4. https://www.jianshu.com/p/2006a8c75bb2（FastAPI动态建模） 
+4. https://www.jianshu.com/p/2006a8c75bb2（FastAPI动态建模）
 
 5. https://github.com/xonsh/xonsh/pull/3304/files（python AST解析参考）
 
@@ -104,7 +107,8 @@ eg:
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](暂无). You can also take a look at the [contributing guide](暂无).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](暂无). You can also take a
+look at the [contributing guide](暂无).
 
 ## Show your support
 
