@@ -13,16 +13,6 @@ from pathlib import Path
 PRASE_PATH = Path(__file__).absolute().parent / "parse.js"
 INJECTION_APPS = [
     {
-        "name": "美团外卖",
-        "path": "meituanwaimai",
-        "package_name": "com.sankuai.meituan.takeoutnew"
-    },
-#     {
-#         "name": "饿了么",
-#         "path": "elm",
-#         "package_name": "me.ele"
-#     },
-    {
         "name": "大众点评",
         "path": "dianping",
         "package_name": "com.dianping.v1"
