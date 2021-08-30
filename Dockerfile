@@ -9,6 +9,7 @@ RUN apt-get clean && apt-get update
 RUN apt-get install -y android-tools-adb android-tools-fastboot
 RUN apt-get install -y python3 && apt-get install -y python3-pip
 RUN apt-get install -y git-core
+RUN apt-get install -y nodejs && apt-get install -y npm
 
 RUN git clone https://github.com/cbpu/hooker.git
 WORKDIR hooker
@@ -18,9 +19,15 @@ WORKDIR /
 RUN git clone https://github.com/cbpu/arida.git
 WORKDIR arida
 RUN pip3 install -r requirements.txt
+RUN npm install @babel/core --save
 
-RUN apt-get install -y nodejs && apt-get install -y npm
+EXPOSE 8000
 
+RUN apt-get install -y curl
+RUN npm install -g n
+RUN n stable
+
+ENV DEVICE=""
 ADD start.sh start.sh
-ENV DEVICE;
-ENTRYPOINT["/arida/start.sh","$DEVICE"]
+RUN chmod 777 start.sh
+ENTRYPOINT ["sh","-c","/arida/start.sh $DEVICE"]

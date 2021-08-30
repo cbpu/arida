@@ -6,7 +6,16 @@ else
     echo "请指定要连接的设备";
     return
 fi
-
 adb connect "$1";
-uvicorn main:app --reload
+adb wait-for-device
+echo "完成连接设备: $1";
+
+echo "启动大众点评APP";
+frida  -U -f com.dianping.v1 --no-pause -e 0 -q
+
+echo "等待大众点评APP完成启动";
+sleep 20S
+
+echo "开始运行arida";
+uvicorn main:app --host 0.0.0.0 --reload
 
