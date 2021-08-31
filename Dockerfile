@@ -17,7 +17,7 @@ RUN apt-get install -y python3 && apt-get install -y python3-pip
 
 RUN apt-get install -y git-core
 
-RUN git clone https://github.com/cbpu/hooker.git
+RUN git clone https://gitee.com/puchaobo_441/hooker.git
 WORKDIR hooker
 RUN pip3 install -r requirements.txt
 
