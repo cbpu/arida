@@ -7,109 +7,77 @@ function toJson(obj) {
     }
 }
 
-function registerShopSearchObserverClass() {
+let siuaResult = null;
+
+function siua() {
     Java.perform(function () {
-        var rxObserver = Java.use("com.sankuai.waimai.platform.capacity.network.retrofit.b$b");
-        Java.registerClass({
-            name: 'cbpu.rx.Observer',
-            supperClass: [rxObserver],
-            methods: {
-                a: [{
-                    returnType: 'void',
-                    argumentTypes: ['java.lang.Object'],
-                    implementation: function (t) {
-                        console.log(t);
-                    }
-                }]
-            }
-        })
+        const currentApplication = Java.use('android.app.ActivityThread').currentApplication();
+        const context = currentApplication.getApplicationContext();
+
+        const SIUA = Java.use("com.meituan.android.common.mtguard.wtscore.plugin.collection.siua.SIUA");
+        const siua = SIUA.getSiuaInstance(context);
+
+        const String = Java.use("java.lang.String");
+        const string = String.$new.overload('[B').call(String, siua.siua());
+
+        siuaResult = string.toString();
     });
-    return "register";
+    return siuaResult;
 }
 
-var genSiuaResult = null;
+var sharkTraceidResult = null;
 
-function genSiua() {
+function sharkTraceid() {
     Java.perform(function () {
-        var currentApplication = Java.use('android.app.ActivityThread').currentApplication();
-        var context = currentApplication.getApplicationContext();
+        const Clazz = Java.use("com.dianping.nvnetwork.util.k");
+        const clazzObj = Clazz.a();
 
-        var siuaClazz = Java.use("com.meituan.android.common.mtguard.wtscore.plugin.collection.siua.SIUA");
-        var siuaObj = siuaClazz.getSiuaInstance(context);
-
-        var stringClazz = Java.use("java.lang.String");
-        var stringObj = stringClazz.$new.overload('[B').call(stringClazz, siuaObj.siua());
-
-        genSiuaResult = stringObj.toString();
+        sharkTraceidResult = clazzObj.b();
     });
-    return genSiuaResult;
-}
-
-var genSharkTraceidResult = null;
-
-function genSharkTraceid() {
-    Java.perform(function () {
-        var clazz = Java.use("com.dianping.nvnetwork.util.k");
-        var clazzObj = clazz.a();
-
-        genSharkTraceidResult = clazzObj.b();
-    });
-    return genSharkTraceidResult;
+    return sharkTraceidResult;
 }
 
 
-var searchGlobalPageResult = "";
+/**
+ *
+ * 店铺搜索
+ * **/
+let searchGlobalPageResult = "";
 
 function searchGlobalPage() {
     Java.perform(function () {
-        // // 获取api service的Class实例
-        // var serviceClazz = Java.use("com.sankuai.waimai.business.search.api.WaimaiSearchService");
-        // console.log("获取api service的Class实例");
-        // // 获取retrofit的动态代理工具类
-        // var proxyUtilClazz = Java.use("com.sankuai.waimai.platform.capacity.network.retrofit.b");
-        // console.log("获取retrofit的动态代理工具类");
-        // // 主动调用动态代理工具类方法生成api service的对象实例
-        // // 获取Class类型参数在使用use加载后使用".class"转换
-        // // 静态类重载方法需要在call()方法使用静态类的Class实例
-        // var serviceObj = proxyUtilClazz.a.overload("java.lang.Class").call(proxyUtilClazz, serviceClazz.class);
-        // console.log("主动调用动态代理工具类方法生成api service的对象实例");
-        // console.log(serviceObj.toString());
-        // // 强制转换api service类型
-        // var waimaiSearchServiceObj = Java.cast(serviceObj, serviceClazz);
-        // console.log("强制转换api service类型");
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Array = Java.use('java.lang.reflect.Array');
 
-        let rObject = Java.use('java.lang.Object');
-        let rThread = Java.use('java.lang.Thread');
-        let rString = Java.use('java.lang.String');
-        let rInteger = Java.use('java.lang.Integer');
-        let rBoolean = Java.use('java.lang.Boolean');
-        let rLong = Java.use('java.lang.Long');
-        let rArray = Java.use('java.lang.reflect.Array');
-
-        let rRetrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
-        let rClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
-        let rRetrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
 
         // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
-        let rRetrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
         console.log("我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象");
 
         // 我们需要注册WaimaiSearchService这个interface
-        let rWaimaiSearchApi = Java.use('com.sankuai.waimai.business.search.api.WaimaiSearchService');
+        let WaimaiSearchApi = Java.use('com.sankuai.waimai.business.search.api.WaimaiSearchService');
         console.log("我们需要注册WaimaiSearchService这个interface");
 
         // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
-        let retrofit = rRetrofit$Creator.a.overload('java.lang.Class').call(
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
             // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
-            rRetrofit$Creator,
+            Retrofit$Creator,
 
             // 注册WaimaiSearchService这个interface
-            rWaimaiSearchApi.class
+            WaimaiSearchApi.class
         );
         console.log(`retrofit: ${retrofit}`);
 
-        // 通过getDeclaredMethods找到 rWaimaiSearchApi.searchGlobalPage method
-        let methods = rWaimaiSearchApi.class.getDeclaredMethods();
+        // 通过getDeclaredMethods找到 WaimaiSearchApi.searchGlobalPage method
+        let methods = WaimaiSearchApi.class.getDeclaredMethods();
         let method;
         for (let i = 0; i < methods.length; i++) {
             if (methods[i].getName().indexOf('searchGlobalPage') !== -1) {
@@ -123,67 +91,67 @@ function searchGlobalPage() {
         let serviceMethod = retrofit.loadServiceMethod(method);
         console.log(`serviceMethod: ${serviceMethod}`);
 
-        // 构造 rWaimaiSearchApi.searchGlobalPage 所需的参数
-        var entrance_id = 0;
-        var category_type = 0;
-        var sub_category_type = 0;
-        var keyword = "和府捞面";
-        var query_type = 1;
-        var page_index = 0;
-        var page_size = 10;
-        var activity_filter_codes = null;
-        var slider_select_data = null;
-        var sort_type = 0;
-        var is_fix_keyword = false;
+        // 构造 WaimaiSearchApi.searchGlobalPage 所需的参数
+        const entrance_id = 0;
+        const category_type = 0;
+        const sub_category_type = 0;
+        const keyword = "和府捞面";
+        const query_type = 1;
+        const page_index = 0;
+        const page_size = 10;
+        const activity_filter_codes = null;
+        const slider_select_data = null;
+        const sort_type = 0;
+        const is_fix_keyword = false;
 
-        var resultFragmentClazz = Java.use("com.sankuai.waimai.business.search.ui.result.ResultFragment");
+        const ResultFragment = Java.use("com.sankuai.waimai.business.search.ui.result.ResultFragment");
         console.log("加载search_global_id获取工具类");
-        var search_global_id = resultFragmentClazz.g();
+        const search_global_id = ResultFragment.g();
         console.log("获取search_global_id");
 
-        var filter_mapping = null;
-        var show_mode = null;
-        var search_source = 0;
-        var product_card_page_index = 0;
-        var product_tag_id = null;
-        var search_cursor = 0;
-        var search_page_type = 0;
-        var search_longitude = 0;
-        var search_latitude = 0;
-        var word_source = null;
-        var gaoda_id = 0;
-        var weien_id = 0;
+        const filter_mapping = null;
+        const show_mode = null;
+        const search_source = 0;
+        const product_card_page_index = 0;
+        const product_tag_id = null;
+        const search_cursor = 0;
+        const search_page_type = 0;
+        const search_longitude = 0;
+        const search_latitude = 0;
+        const word_source = null;
+        const gaoda_id = 0;
+        const weien_id = 0;
 
         let params = Java.array('java.lang.Object', [
-            rInteger.$new(entrance_id),
-            rInteger.$new(category_type),
-            rInteger.$new(sub_category_type),
+            Integer.$new(entrance_id),
+            Integer.$new(category_type),
+            Integer.$new(sub_category_type),
             keyword,
-            rInteger.$new(query_type),
-            rInteger.$new(page_index),
-            rInteger.$new(page_size),
+            Integer.$new(query_type),
+            Integer.$new(page_index),
+            Integer.$new(page_size),
             activity_filter_codes,
             slider_select_data,
-            rInteger.$new(sort_type),
-            rBoolean.$new(is_fix_keyword),
-            rLong.$new(search_global_id),
+            Integer.$new(sort_type),
+            Boolean.$new(is_fix_keyword),
+            Long.$new(search_global_id),
             filter_mapping,
             show_mode,
-            rInteger.$new(search_source),
-            rInteger.$new(product_card_page_index),
+            Integer.$new(search_source),
+            Integer.$new(product_card_page_index),
             product_tag_id,
-            rInteger.$new(search_cursor),
-            rInteger.$new(search_page_type),
-            rInteger.$new(search_longitude),
-            rInteger.$new(search_latitude),
+            Integer.$new(search_cursor),
+            Integer.$new(search_page_type),
+            Integer.$new(search_longitude),
+            Integer.$new(search_latitude),
             word_source,
-            rInteger.$new(gaoda_id),
-            rInteger.$new(weien_id)
+            Integer.$new(gaoda_id),
+            Integer.$new(weien_id)
         ]);
-        console.log(`ary: ${params}, ary.length: ${params.length}`);
+        console.log(`array: ${params}, array.length: ${params.length}`);
 
         // 构造ClientCall对象
-        let call = rClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
+        let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
         console.log(`call: ${call}`);
 
         // 调用ClientCall.execute 执行request并获取response。
@@ -192,71 +160,218 @@ function searchGlobalPage() {
         console.log(`response.url: ${response.url()}`);
         console.log(`response.code: ${response.code()}`);
         console.log(`response.message: ${response.message()}`);
-        // console.log(`response.body: ${toJson(response.body())}`);
+        console.log(`response.body: ${toJson(response.body())}`);
 
-
-        //     console.log("执行请求方法获取rx.d实例");
-        //     console.log(rxDObj);
-
-        //     var rxObserverClazz = Java.use("com.dianping.nvnetwork.failover.c$a");
-        //     var outClazz = Java.use("com.dianping.nvnetwork.failover.c");
-        //     var outObj = outClazz.$new(null, null, null);
-        //     var rxObserverObj = rxObserverClazz.$new(outObj);
-        //     console.log("获取rx.j实例");
-
-        // rxObserverClazz.unsubscribe.implementation = function () {
-        //     console.log("开始请求unsubscribe");
-        // }
-
-        // rxObserverClazz.onNext.implementation = function (obj) {
-        //     console.log("开始请求onNext");
-        //     console.log(obj);
-        //     this.onNext(obj);
-        // }
-
-        // proxyUtilClazz.a.overload("rx.d", "rx.j", "java.lang.Object", "boolean").call(proxyUtilClazz, rxDObj, rxObserverObj, "ResultFragment1627397449364", true);
-
-        // var clazz = Java.use('java.lang.Class');
-        // var aField = Java.cast(rxDObj.getClass(), clazz).getDeclaredField('a');
-        // // 设置该属性为可访问
-        // aField.setAccessible(true);
-        // // 调用get方法获取属性值
-        // var aValue = aField.get(rxDObj);
-        // console.log(aValue);
-
-        // var bodySubscriberObj = Java.use("com.sankuai.meituan.retrofit2.adapter.rxjava.BodyOnSubscribe$BodySubscriber").$new(rxObserverObj);
-
-        // var methods = Java.cast(aValue.getClass(), clazz).getDeclaredMethods();
-        // methods.forEach(function (method) {
-        //     console.log(method);
-        // });
-
-        // var method = methods[0];
-        // ;
-        // console.log(dynamic_invoke(aValue, method, [bodySubscriberObj]));
-
-        // aValue.call(bodySubscriberObj);
-
-        // var bodyOnSubscribeClazz = Java.use("com.sankuai.meituan.retrofit2.adapter.rxjava.BodyOnSubscribe");
-        // var methods = Java.cast(aValue.getClass(), clazz).getDeclaredMethods();
-        // var method = methods[0];
-        // method.invoke(aValue, bodySubscriberObj);
-
-        // console.log("执行proxyUtilClazz.a.overload(\"rx.d\", \"rx.j\", \"java.lang.Object\")");
-
-        // } catch (error) {
-        //     console.log(error);
-        // }
-
-        searchGlobalPageResult = toJson(response.body());
-
+        searchGlobalPageResult = toJson(response);
     });
     return searchGlobalPageResult;
 }
 
+/**
+ *
+ * 门店列表
+ * **/
+let poiListResult = "";
+
+function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, address) {
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        const WmAddress = Java.use('com.sankuai.waimai.foundation.location.v2.WmAddress');
+        const wmAddress = WmAddress.$new();
+        wmAddress.setStatusCode(1200);
+
+        const WMLocation = Java.use('com.sankuai.waimai.foundation.location.v2.WMLocation');
+        const wMLocation = WMLocation.$new.overload("java.lang.String").call(WMLocation, WMLocation.WM_MANUALLY_LOCATE_PROVIDER.value);
+
+        console.log(`输入参数latitude: ${latitude}`);
+        console.log(`当前location: ${wMLocation.$super}`);
+        let methods = Java.cast(Java.use('android.location.Location').class, Class).getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('setLatitude') !== -1) {
+                method = methods[i];
+                console.log(`获取到setLatitude method: ${method}`);
+                break;
+            }
+        }
+        method.setAccessible(true);
+        method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(latitude)]);
+        console.log(`调用setLatitude后location: ${wMLocation.$super}`);
+
+        console.log(`输入参数latitude: ${longitude}`);
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('setLongitude') !== -1) {
+                method = methods[i];
+                console.log(`获取到setLongitude method: ${method}`);
+                break;
+            }
+        }
+        method.setAccessible(true);
+        method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(longitude)]);
+        console.log(`调用setLongitude后location: ${wMLocation.$super}`);
+
+        const LocationResultCode = Java.use('com.sankuai.waimai.foundation.location.v2.LocationResultCode');
+        const locationResultCode = LocationResultCode.$new();
+
+        const aField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('a');
+        aField.setAccessible(true);
+        aField.setInt(locationResultCode, 1200);
+        const bField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('b');
+        bField.setAccessible(true);
+        bField.set(locationResultCode, '');
+        console.log(`构建locationResultCode: ${toJson(locationResultCode)}`);
+
+        wMLocation.setLocationResultCode(locationResultCode);
+        wmAddress.setWMLocation(wMLocation);
+        wmAddress.setCreateTime(new Date().getTime());
+        wmAddress.setAddress(address);
+
+        const City = Java.use('com.sankuai.waimai.foundation.location.v2.City');
+        const city = City.$new.overload().call(City);
+        city.setCityName(city_name);
+        city.setCityCode(city_code);
+        wmAddress.setMafCity(city);
+
+        const WmAddressManager = Java.use('com.sankuai.waimai.foundation.location.v2.g');
+        const wmAddressManager = WmAddressManager.a.overload().call(WmAddressManager);
+        wmAddressManager.a
+            .overload('com.sankuai.waimai.foundation.location.v2.WmAddress', "java.lang.String", 'boolean')
+            .call(wmAddressManager, wmAddress, 'LOCATE_MANUALLY', false);
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ChannelApi这个interface
+        let ChannelApi = Java.use('com.sankuai.waimai.business.page.common.net.request.ChannelApi');
+        console.log("注册ChannelApi这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ChannelApi这个interface
+            ChannelApi.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ChannelApi.getChannelPoiList method
+        methods = ChannelApi.class.getDeclaredMethods();
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getChannelPoiList') !== -1) {
+                method = methods[i];
+                console.log(`获取到getChannelPoiList method: ${method}`);
+                break;
+            }
+        }
+
+        // 通过retrofit对象和interface method生成ServiceMethod对象
+        let serviceMethod = retrofit.loadServiceMethod(method);
+        console.log(`通过retrofit对象和interface method生成ServiceMethod对象 serviceMethod: ${serviceMethod}`);
+
+        const CommonRequestBodyHolder = Java.use('com.sankuai.waimai.business.page.common.net.request.a$a');
+        const commonRequestBody = CommonRequestBodyHolder.$new().a();
+        console.log(`构建公共请求参数 commonRequestBody: ${toJson(commonRequestBody)}`);
+
+        // 构造 ChannelApi.getChannelPoiList 所需的参数
+        const offset = 20 * seq_num;
+        const dynamic_page = false;
+
+        latitude = latitude * 1000000;
+        longitude = longitude * 1000000;
+        const page_index = seq_num;
+        const page_size = 0;
+        const sort_type = 0;
+        const category_type = 910;
+        const filter_type = 0;
+        const second_category_type = 0;
+        const navigate_type = 910;
+        const activity_filter_codes = '';
+        const slider_select_data = '';
+        const load_type = 3;
+        const preload = 0;
+        const trace_tag = '';
+        const rank_trace_id = commonRequestBody.q.value;
+
+        const ListIDHelper = Java.use('com.sankuai.waimai.platform.utils.listid.ListIDHelper');
+        const ListIDHelperHolder = Java.use('com.sankuai.waimai.platform.utils.listid.ListIDHelper$a');
+        const listIDHelper = ListIDHelperHolder.a.value;
+        const rank_list_id = listIDHelper.a.overload().call(listIDHelper);
+        console.log(`生成rank_list_id: ${rank_list_id}`);
+
+        const Statistics = Java.use('com.meituan.android.common.statistics.Statistics');
+        const session_id = Statistics.getSession();
+        const union_id = Statistics.getUnionId();
+
+        const SilentRefreshHelper = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper');
+        const PageSource = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper$PageSource');
+        const silentRefreshHelper = SilentRefreshHelper.a.overload().call(SilentRefreshHelper);
+        const behavioral_characteristics = silentRefreshHelper.c.overload('java.lang.String', 'int').call(silentRefreshHelper, PageSource.KING_KONG_POI_LIST.value, commonRequestBody.n.value);
+
+        let params = Java.array('java.lang.Object', [
+            Integer.$new(seq_num),
+            Integer.$new(offset),
+            Boolean.$new(dynamic_page),
+            Long.$new(latitude),
+            Long.$new(longitude),
+            Long.$new(page_index),
+            Long.$new(page_size),
+            Long.$new(sort_type),
+            Long.$new(category_type),
+            Long.$new(filter_type),
+            Long.$new(second_category_type),
+            Long.$new(navigate_type),
+            activity_filter_codes,
+            slider_select_data,
+            Integer.$new(load_type),
+            Integer.$new(preload),
+            trace_tag,
+            rank_trace_id,
+            rank_list_id,
+            session_id,
+            union_id,
+            behavioral_characteristics
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        // 构造ClientCall对象
+        let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
+        console.log(`call: ${call}`);
+
+        // 调用ClientCall.execute 执行request并获取response。
+        try {
+            let response = call.execute();
+            // console.log(`response: ${toJson(response)}`);
+            console.log(`response.url: ${response.url()}`);
+            console.log(`response.code: ${response.code()}`);
+            console.log(`response.message: ${response.message()}`);
+            console.log(`response.body: ${toJson(response.body())}`);
+
+            poiListResult = toJson(response);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+    return poiListResult;
+}
+
 rpc.exports = {
-    registerClass: registerShopSearchObserverClass,
-    genSiua: genSiua,
-    genSharkraceid: genSharkTraceid,
-    searchShop: searchGlobalPage
+    siua: siua,
+    sharkraceid: sharkTraceid,
+    searchShop: searchGlobalPage,
+    poiList: getChannelPoiList
 }

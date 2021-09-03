@@ -29,7 +29,7 @@ from config import *
 
 # 配置相关函数的参数类型列表
 function_params_hints = {
-    "encryptData": [0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0]
+
 }
 
 # frida启动前检测
