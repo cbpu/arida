@@ -534,19 +534,107 @@ if (Java.available) {
         //     return this.a(context, str, str2, j);
         // }
 
-        Java.use('com.sankuai.waimai.foundation.location.v2.g')
+        // Java.use('com.sankuai.waimai.foundation.location.v2.g')
+        //     .a
+        //     .overload('com.sankuai.waimai.foundation.location.v2.WmAddress', 'java.lang.String', 'boolean')
+        //     .implementation = function (wmAddress, str, z) {
+        //     console.log(`str: ${str}`);
+        //     console.log(`wmAddress: ${toJson(wmAddress)}`);
+        //     console.log(`z: ${z}`);
+        //     printStack();
+        //     return this.a(wmAddress, str, z);
+        // }
+
+
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+        //     .a
+        //     .overload('long', 'int', 'int', 'java.lang.String', 'java.lang.String', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+        //     .implementation = function (j, i, i2, str, str2, bVar) {
+        //     console.log(`j: ${j}`);
+        //     console.log(`i: ${i}`);
+        //     console.log(`i2: ${i2}`);
+        //     console.log(`str: ${str}`);
+        //     console.log(`str2: ${str2}`);
+        //     printStack();
+        //     return this.a(j, i, i2, str, str2, bVar);
+        // }
+
+        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
             .a
-            .overload('com.sankuai.waimai.foundation.location.v2.WmAddress', 'java.lang.String', 'boolean')
-            .implementation = function (wmAddress, str, z) {
-            console.log(`str: ${str}`);
-            console.log(`wmAddress: ${toJson(wmAddress)}`);
-            console.log(`z: ${z}`);
+            .overload('long', 'int', 'int', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+            .implementation = function (j, i, i2, bVar) {
+            console.log(`j: ${j}`);
+            console.log(`i: ${i}`);
+            console.log(`i2: ${i2}`);
             printStack();
-            return this.a(wmAddress, str, z);
+            return this.a(j, i, i2, bVar);
         }
 
+        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+            .b
+            .overload('long', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+            .implementation = function (j, bVar) {
+            console.log(`j: ${j}`);
+            printStack();
+            return this.a(j, bVar);
+        }
 
-        // /?seq_num=1&offset=20&dynamic_page=false&latitude=39914443&longitude=116494723&page_index=1&page_size=0&sort_type=0&category_type=910&filter_type=0&second_category_type=0&navigate_type=910&activity_filter_codes=&slider_select_data=&load_type=3&preload=0&trace_tag=&rank_trace_id=7A72B58C1C0B6015344147B01BB3D2DC&session_id=d8ebf820-8d91-4da7-bf80-b25aa5f91bc21630490461276289&union_id=8c7f0a2c93fe4ab89efe37625c658d0a0000000000009310851&behavioral_characteristics=%7B%22module_action%22%3A%7B%22extra_info%22%3A%7B%22factlist_offset_after_dedup%22%3A20%7D%2C%22request_type%22%3A2%7D%2C%22exp_info%22%3A%7B%22exp_group_name%22%3A%22poilist_dynamicPaging_exp%22%2C%22exp_name%22%3A%22OB%22%2C%22scene_name%22%3A%22poilist_dynamicPaging%22%7D%7D&wm_appversion=7.62.2&wm_ctype=android&userid=117600512&uuid=0000000000000D293E560C44543A5AEA21726F904B49AA163044592666356980&platform=4&personalized=1&wm_latitude=39914443&poilist_mt_cityid=1&wm_actual_longitude=116494245&wm_visitid=1dc0b015-6d47-455e-8ea3-42f86ee10c8f&wm_dversion=27_8.1.0&wm_mac=02%3A00%3A00%3A00%3A00%3A00&wm_logintoken=Zx_cOfr2QdbjeOhrSXTDr7hjmh4AAAAAdQ4AAM5ZbOVTxdQf97ywXW7tuiTs7CHNC5FqX8cs-S8ScC0BtrkFjwb10sjlsQKDI8E1ug&push_token=dpsh703372f74eba22939a7b16e77e191c6catpu&app=4&oa_id=&poilist_wm_cityid=110100&wm_longitude=116494723&wm_actual_latitude=39914697&wm_did=865400034117081&version=7.62.2&wm_dtype=Redmi+4A&wm_uuid=0000000000000D293E560C44543A5AEA21726F904B49AA163044592666356980&partner=4&seq_id=495&wm_channel=1061&request_id=DBFC6564-21C6-4581-9096-834BF3372CF5&waimai_sign=MOFbiOtWIelK%2BJ41AQh%2F6sNGKCbUTgVKXWgncfPCQQ%2FbJtRLcJeP4zf0cZ2DxidANbt9oVsW0ZN%2BQMOcVe3Z92R%2F%2Bwkp90cJ0g%2BOyFC7TeU4UahB%2BYP%2Fb9162QcHTSQeDi02M4hg1Hxr15NboQ%2F1owx80sqG%2FiqGIxHlgZKscaU%3D&wm_seq=221&req_time=1630494495036
+        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+            .a
+            .overload(
+                'java.lang.String',
+                'long',
+                'long',
+                'com.sankuai.waimai.business.restaurant.base.repository.model.g',
+                'java.lang.String',
+                'int',
+                'java.lang.String',
+                'java.lang.String',
+                'java.lang.String',
+                'java.lang.String',
+                'java.lang.String',
+                'java.lang.String',
+                'com.sankuai.waimai.business.restaurant.base.repository.net.b',
+                'java.lang.String')
+            .implementation = function (str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9) {
+            console.log(`str: ${str}`);
+            console.log(`j: ${j}`);
+            console.log(`j2: ${j2}`);
+            console.log(`str2: ${str2}`);
+            console.log(`str3: ${str3}`);
+            console.log(`str4: ${str4}`);
+            console.log(`str5: ${str5}`);
+            console.log(`str6: ${str6}`);
+            console.log(`str7: ${str7}`);
+            console.log(`str8: ${str8}`);
+            console.log(`str9: ${str9}`);
+            printStack();
+            return this.a(str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9)
+        }
+
+        Java.use('com.sankuai.waimai.store.base.net.sg.a')
+            .a
+            .overload('long', 'long', 'long', 'java.lang.String', 'java.lang.String', 'com.sankuai.waimai.store.base.net.j')
+            .implementation = function (j, j2, j3, str, str2, jVar) {
+            console.log(`j: ${j}`);
+            console.log(`j2: ${j2}`);
+            console.log(`j3: ${j3}`);
+            console.log(`str: ${str}`);
+            console.log(`str2: ${str2}`);
+            printStack();
+            return this.a(j, j2, j3, str, str2, jVar);
+        }
+
+        Java.use('com.sankuai.waimai.business.restaurant.base.repository.preload.RestMenuNetWorkPreLoader')
+            .run
+            .implementation = function (bundle, uri, cVar) {
+            console.log(`bundle: ${bundle}`);
+            console.log(`uri: ${uri}`);
+
+            printStack();
+            return this.run(bundle, uri, cVar);
+        }
+
 
     });
 }

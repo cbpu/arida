@@ -1,7 +1,15 @@
 function toJson(obj) {
     try {
-        const gson = Java.use('com.google.gson.Gson');
-        return (gson.$new().toJson(obj)).toString()
+        // const gson = Java.use('com.google.gson.Gson');
+        const GsonBuilder = Java.use('com.google.gson.GsonBuilder');
+        const gson = GsonBuilder.$new()
+            .serializeSpecialFloatingPointValues()
+            .disableHtmlEscaping()
+            .serializeNulls()
+            .enableComplexMapKeySerialization()
+            .setLenient()
+            .create();
+        return (gson.toJson(obj)).toString()
     } catch (e) {
         return "error:" + e
     }
@@ -302,7 +310,7 @@ function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, a
         const navigate_type = 910;
         const activity_filter_codes = '';
         const slider_select_data = '';
-        const load_type = 3;
+        const load_type = 5;
         const preload = 0;
         const trace_tag = '';
         const rank_trace_id = commonRequestBody.q.value;
@@ -369,9 +377,485 @@ function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, a
     return poiListResult;
 }
 
+function buildRetrofitCall(retrofit, method, ClientCall, params) {
+    // 通过retrofit对象和interface method生成ServiceMethod对象
+    let serviceMethod = retrofit.loadServiceMethod(method);
+    console.log(`通过retrofit对象和interface method生成ServiceMethod对象 serviceMethod: ${serviceMethod}`);
+
+    // 构造ClientCall对象
+    let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
+    console.log(`call: ${call}`);
+
+    return call;
+}
+
+/**
+ * 调用ClientCall.execute 执行request并获取response
+ * */
+function execute(call) {
+    let result = {
+        status: 0,
+        err: null,
+        body: null
+    };
+    try {
+        let response = call.execute();
+        console.log(`response.url: ${response.url()}`);
+        console.log(`response.code: ${response.code()}`);
+        console.log(`response.message: ${response.message()}`);
+        console.log(`response.body: ${toJson(response.body())}`);
+        result.status = 1;
+        result.body = toJson(response);
+    } catch (err) {
+        console.log(err);
+        result.err = err;
+    }
+
+    return result;
+}
+
+/**
+ *
+ * 门店信息
+ * **/
+function getPoiInfo(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getPoiInfo method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getPoiInfo') !== -1) {
+                method = methods[i];
+                console.log(`获取到getPoiInfo method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getPoiInfo 所需的参数
+        const business_type = 0;
+        const referer_source = 1;
+        const allowance_alliance_scenes = '';
+        const ad_activity_flag = '';
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id),
+            Integer.$new(business_type),
+            Integer.$new(referer_source),
+            allowance_alliance_scenes,
+            ad_activity_flag
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 优惠券信息
+ * **/
+function getVoucherCouponList(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getVoucherCouponList method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getVoucherCouponList') !== -1) {
+                method = methods[i];
+                console.log(`获取到getVoucherCouponList method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getVoucherCouponList 所需的参数
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id)
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 优惠券信息
+ * **/
+function getPopupMenu(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getPopupMenu method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getPopupMenu') !== -1) {
+                method = methods[i];
+                console.log(`获取到getPopupMenu method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getPopupMenu 所需的参数
+        const source = 1;
+        const business_type = 0;
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id),
+            Integer.$new(source),
+            Integer.$new(business_type)
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 优惠券信息
+ * **/
+function getAvailableCouponTip(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getAvailableCouponTip method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getAvailableCouponTip') !== -1) {
+                method = methods[i];
+                console.log(`获取到getAvailableCouponTip method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getAvailableCouponTip 所需的参数
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id)
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 菜品信息
+ * **/
+function getShopMenu(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getShopMenu method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getShopMenu') !== -1) {
+                method = methods[i];
+                console.log(`获取到getShopMenu method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getShopMenu 所需的参数
+        const group_chat_share = '';
+        const product_spu_id = 0;
+        const recall_type = 0;
+        const search_word = '';
+        const search_log_id = '';
+        const page_index = 0;
+        const recommend_product = '';
+        const source_page_type = 0;
+
+        const StyleTemplateIdUtil = Java.use('com.sankuai.waimai.business.restaurant.poicontainer.dynamic.framework.g')
+        const styleTemplateIdUtil = StyleTemplateIdUtil.c();
+        const style_template_ids = styleTemplateIdUtil.b.overload().call(styleTemplateIdUtil);
+        console.log(`生成style_template_ids: ${style_template_ids}`);
+
+        const allowance_alliance_scenes = '';
+        const content_info = '';
+        const ad_activity_flag = '';
+        const brand_page_type = 0;
+        const is_cross = 0;
+        const request_mark = '{"seckill":0}';
+
+        let params = Java.array('java.lang.Object', [
+            group_chat_share,
+            Long.$new(poi_id),
+            Long.$new(product_spu_id),
+            Integer.$new(recall_type),
+            search_word,
+            search_log_id,
+            Integer.$new(page_index),
+            recommend_product,
+            Integer.$new(source_page_type),
+            style_template_ids,
+            allowance_alliance_scenes,
+            content_info,
+            ad_activity_flag,
+            Integer.$new(brand_page_type),
+            Integer.$new(is_cross),
+            request_mark
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 评论信息
+ * **/
+function getComments(poi_id, page_offset) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getComments method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getComments') !== -1) {
+                method = methods[i];
+                console.log(`获取到getComments method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getComments 所需的参数
+        const page_size = 20;
+        const comment_score_type = 0;
+        const label_id = 0;
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id),
+            Integer.$new(page_offset),
+            Integer.$new(page_size),
+            Integer.$new(comment_score_type),
+            Long.$new(label_id)
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
 rpc.exports = {
     siua: siua,
     sharkraceid: sharkTraceid,
     searchShop: searchGlobalPage,
-    poiList: getChannelPoiList
+    poiList: getChannelPoiList,
+    poiInfo: getPoiInfo,
+    couponTip: getVoucherCouponList,
+    popupMenu: getPopupMenu,
+    availableCoupon: getAvailableCouponTip,
+    shopMenu: getShopMenu,
+    listComments: getComments
 }
