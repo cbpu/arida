@@ -52,7 +52,7 @@ function sharkTraceid() {
  * **/
 let searchGlobalPageResult = "";
 
-function searchGlobalPage() {
+function searchGlobalPage(keyword, city_code, city_name, latitude, longitude, address) {
     Java.perform(function () {
         let Object = Java.use('java.lang.Object');
         let Thread = Java.use('java.lang.Thread');
@@ -60,7 +60,11 @@ function searchGlobalPage() {
         let Integer = Java.use('java.lang.Integer');
         let Boolean = Java.use('java.lang.Boolean');
         let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
         let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let {methods, method} = setLocation(latitude, Class, Double, longitude, address, city_name, city_code);
 
         let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
         let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
@@ -85,8 +89,7 @@ function searchGlobalPage() {
         console.log(`retrofit: ${retrofit}`);
 
         // 通过getDeclaredMethods找到 WaimaiSearchApi.searchGlobalPage method
-        let methods = WaimaiSearchApi.class.getDeclaredMethods();
-        let method;
+        methods = WaimaiSearchApi.class.getDeclaredMethods();
         for (let i = 0; i < methods.length; i++) {
             if (methods[i].getName().indexOf('searchGlobalPage') !== -1) {
                 method = methods[i];
@@ -103,7 +106,7 @@ function searchGlobalPage() {
         const entrance_id = 0;
         const category_type = 0;
         const sub_category_type = 0;
-        const keyword = "和府捞面";
+        // const keyword = keyword;
         const query_type = 1;
         const page_index = 0;
         const page_size = 10;
@@ -175,13 +178,118 @@ function searchGlobalPage() {
     return searchGlobalPageResult;
 }
 
+function buildRetrofitCall(retrofit, method, ClientCall, params) {
+    // 通过retrofit对象和interface method生成ServiceMethod对象
+    let serviceMethod = retrofit.loadServiceMethod(method);
+    console.log(`通过retrofit对象和interface method生成ServiceMethod对象 serviceMethod: ${serviceMethod}`);
+
+    // 构造ClientCall对象
+    let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
+    console.log(`call: ${call}`);
+
+    return call;
+}
+
+/**
+ * 调用ClientCall.execute 执行request并获取response
+ * */
+function execute(call) {
+    let result = {
+        status: 0,
+        err: null,
+        body: null
+    };
+
+    try {
+        let response = call.execute();
+        console.log(`response.url: ${response.url()}`);
+        console.log(`response.code: ${response.code()}`);
+        console.log(`response.message: ${response.message()}`);
+        // console.log(`response.body: ${toJson(response.body())}`);
+        result.status = 1;
+        result.body = toJson(response);
+    } catch (err) {
+        result.err = JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+        console.log(`err: ${result.err}`);
+    }
+
+    return result;
+}
+
+/**
+ * 设置位置
+ * */
+function setLocation(latitude, Class, Double, longitude, address, city_name, city_code) {
+    const WmAddress = Java.use('com.sankuai.waimai.foundation.location.v2.WmAddress');
+    const wmAddress = WmAddress.$new();
+    wmAddress.setStatusCode(1200);
+
+    const WMLocation = Java.use('com.sankuai.waimai.foundation.location.v2.WMLocation');
+    const wMLocation = WMLocation.$new.overload("java.lang.String").call(WMLocation, WMLocation.WM_MANUALLY_LOCATE_PROVIDER.value);
+
+    console.log(`输入参数latitude: ${latitude}`);
+    console.log(`当前location: ${wMLocation.$super}`);
+    let methods = Java.cast(Java.use('android.location.Location').class, Class).getDeclaredMethods();
+    let method;
+    for (let i = 0; i < methods.length; i++) {
+        if (methods[i].getName().indexOf('setLatitude') !== -1) {
+            method = methods[i];
+            console.log(`获取到setLatitude method: ${method}`);
+            break;
+        }
+    }
+    method.setAccessible(true);
+    method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(latitude)]);
+    console.log(`调用setLatitude后location: ${wMLocation.$super}`);
+
+    console.log(`输入参数latitude: ${longitude}`);
+    for (let i = 0; i < methods.length; i++) {
+        if (methods[i].getName().indexOf('setLongitude') !== -1) {
+            method = methods[i];
+            console.log(`获取到setLongitude method: ${method}`);
+            break;
+        }
+    }
+    method.setAccessible(true);
+    method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(longitude)]);
+    console.log(`调用setLongitude后location: ${wMLocation.$super}`);
+
+    const LocationResultCode = Java.use('com.sankuai.waimai.foundation.location.v2.LocationResultCode');
+    const locationResultCode = LocationResultCode.$new();
+
+    const aField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('a');
+    aField.setAccessible(true);
+    aField.setInt(locationResultCode, 1200);
+    const bField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('b');
+    bField.setAccessible(true);
+    bField.set(locationResultCode, '');
+    console.log(`构建locationResultCode: ${toJson(locationResultCode)}`);
+
+    wMLocation.setLocationResultCode(locationResultCode);
+    wmAddress.setWMLocation(wMLocation);
+    wmAddress.setCreateTime(new Date().getTime());
+    wmAddress.setAddress(address);
+
+    const City = Java.use('com.sankuai.waimai.foundation.location.v2.City');
+    const city = City.$new.overload().call(City);
+    city.setCityName(city_name);
+    city.setCityCode(city_code);
+    wmAddress.setMafCity(city);
+
+    const WmAddressManager = Java.use('com.sankuai.waimai.foundation.location.v2.g');
+    const wmAddressManager = WmAddressManager.a.overload().call(WmAddressManager);
+    wmAddressManager.a
+        .overload('com.sankuai.waimai.foundation.location.v2.WmAddress', "java.lang.String", 'boolean')
+        .call(wmAddressManager, wmAddress, 'LOCATE_MANUALLY', false);
+    return {methods, method};
+}
+
 /**
  *
  * 门店列表
  * **/
-let poiListResult = "";
-
 function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, address) {
+    let result;
     Java.perform(function () {
         let Object = Java.use('java.lang.Object');
         let Thread = Java.use('java.lang.Thread');
@@ -192,68 +300,7 @@ function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, a
         let Double = Java.use('java.lang.Double');
         let Array = Java.use('java.lang.reflect.Array');
         const Class = Java.use('java.lang.Class');
-
-        const WmAddress = Java.use('com.sankuai.waimai.foundation.location.v2.WmAddress');
-        const wmAddress = WmAddress.$new();
-        wmAddress.setStatusCode(1200);
-
-        const WMLocation = Java.use('com.sankuai.waimai.foundation.location.v2.WMLocation');
-        const wMLocation = WMLocation.$new.overload("java.lang.String").call(WMLocation, WMLocation.WM_MANUALLY_LOCATE_PROVIDER.value);
-
-        console.log(`输入参数latitude: ${latitude}`);
-        console.log(`当前location: ${wMLocation.$super}`);
-        let methods = Java.cast(Java.use('android.location.Location').class, Class).getDeclaredMethods();
-        let method;
-        for (let i = 0; i < methods.length; i++) {
-            if (methods[i].getName().indexOf('setLatitude') !== -1) {
-                method = methods[i];
-                console.log(`获取到setLatitude method: ${method}`);
-                break;
-            }
-        }
-        method.setAccessible(true);
-        method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(latitude)]);
-        console.log(`调用setLatitude后location: ${wMLocation.$super}`);
-
-        console.log(`输入参数latitude: ${longitude}`);
-        for (let i = 0; i < methods.length; i++) {
-            if (methods[i].getName().indexOf('setLongitude') !== -1) {
-                method = methods[i];
-                console.log(`获取到setLongitude method: ${method}`);
-                break;
-            }
-        }
-        method.setAccessible(true);
-        method.invoke.overload('java.lang.Object', '[Ljava.lang.Object;').call(method, wMLocation.$super, [Double.$new(longitude)]);
-        console.log(`调用setLongitude后location: ${wMLocation.$super}`);
-
-        const LocationResultCode = Java.use('com.sankuai.waimai.foundation.location.v2.LocationResultCode');
-        const locationResultCode = LocationResultCode.$new();
-
-        const aField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('a');
-        aField.setAccessible(true);
-        aField.setInt(locationResultCode, 1200);
-        const bField = Java.cast(locationResultCode.getClass(), Class).getDeclaredField('b');
-        bField.setAccessible(true);
-        bField.set(locationResultCode, '');
-        console.log(`构建locationResultCode: ${toJson(locationResultCode)}`);
-
-        wMLocation.setLocationResultCode(locationResultCode);
-        wmAddress.setWMLocation(wMLocation);
-        wmAddress.setCreateTime(new Date().getTime());
-        wmAddress.setAddress(address);
-
-        const City = Java.use('com.sankuai.waimai.foundation.location.v2.City');
-        const city = City.$new.overload().call(City);
-        city.setCityName(city_name);
-        city.setCityCode(city_code);
-        wmAddress.setMafCity(city);
-
-        const WmAddressManager = Java.use('com.sankuai.waimai.foundation.location.v2.g');
-        const wmAddressManager = WmAddressManager.a.overload().call(WmAddressManager);
-        wmAddressManager.a
-            .overload('com.sankuai.waimai.foundation.location.v2.WmAddress', "java.lang.String", 'boolean')
-            .call(wmAddressManager, wmAddress, 'LOCATE_MANUALLY', false);
+        let {methods, method} = setLocation(latitude, Class, Double, longitude, address, city_name, city_code);
 
         let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
         let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
@@ -321,95 +368,48 @@ function getChannelPoiList(seq_num, city_code, city_name, latitude, longitude, a
         const rank_list_id = listIDHelper.a.overload().call(listIDHelper);
         console.log(`生成rank_list_id: ${rank_list_id}`);
 
-        const Statistics = Java.use('com.meituan.android.common.statistics.Statistics');
-        const session_id = Statistics.getSession();
-        const union_id = Statistics.getUnionId();
-
-        const SilentRefreshHelper = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper');
-        const PageSource = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper$PageSource');
-        const silentRefreshHelper = SilentRefreshHelper.a.overload().call(SilentRefreshHelper);
-        const behavioral_characteristics = silentRefreshHelper.c.overload('java.lang.String', 'int').call(silentRefreshHelper, PageSource.KING_KONG_POI_LIST.value, commonRequestBody.n.value);
-
-        let params = Java.array('java.lang.Object', [
-            Integer.$new(seq_num),
-            Integer.$new(offset),
-            Boolean.$new(dynamic_page),
-            Long.$new(latitude),
-            Long.$new(longitude),
-            Long.$new(page_index),
-            Long.$new(page_size),
-            Long.$new(sort_type),
-            Long.$new(category_type),
-            Long.$new(filter_type),
-            Long.$new(second_category_type),
-            Long.$new(navigate_type),
-            activity_filter_codes,
-            slider_select_data,
-            Integer.$new(load_type),
-            Integer.$new(preload),
-            trace_tag,
-            rank_trace_id,
-            rank_list_id,
-            session_id,
-            union_id,
-            behavioral_characteristics
-        ]);
-        console.log(`array: ${params}, array.length: ${params.length}`);
-
-        // 构造ClientCall对象
-        let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
-        console.log(`call: ${call}`);
-
-        // 调用ClientCall.execute 执行request并获取response。
         try {
-            let response = call.execute();
-            // console.log(`response: ${toJson(response)}`);
-            console.log(`response.url: ${response.url()}`);
-            console.log(`response.code: ${response.code()}`);
-            console.log(`response.message: ${response.message()}`);
-            console.log(`response.body: ${toJson(response.body())}`);
+            const Statistics = Java.use('com.meituan.android.common.statistics.Statistics');
+            const session_id = Statistics.getSession();
+            const union_id = Statistics.getUnionId();
 
-            poiListResult = toJson(response);
+            const SilentRefreshHelper = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper');
+            const PageSource = Java.use('com.sankuai.waimai.business.page.common.list.ai.SilentRefreshHelper$PageSource');
+            const silentRefreshHelper = SilentRefreshHelper.a.overload().call(SilentRefreshHelper);
+            const behavioral_characteristics = silentRefreshHelper.c.overload('java.lang.String', 'int').call(silentRefreshHelper, PageSource.KING_KONG_POI_LIST.value, commonRequestBody.n.value);
+
+            let params = Java.array('java.lang.Object', [
+                Integer.$new(seq_num),
+                Integer.$new(offset),
+                Boolean.$new(dynamic_page),
+                Long.$new(latitude),
+                Long.$new(longitude),
+                Long.$new(page_index),
+                Long.$new(page_size),
+                Long.$new(sort_type),
+                Long.$new(category_type),
+                Long.$new(filter_type),
+                Long.$new(second_category_type),
+                Long.$new(navigate_type),
+                activity_filter_codes,
+                slider_select_data,
+                Integer.$new(load_type),
+                Integer.$new(preload),
+                trace_tag,
+                rank_trace_id,
+                rank_list_id,
+                session_id,
+                union_id,
+                behavioral_characteristics
+            ]);
+            console.log(`array: ${params}, array.length: ${params.length}`);
+
+            let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+            result = execute(call);
         } catch (err) {
             console.log(err);
         }
     });
-    return poiListResult;
-}
-
-function buildRetrofitCall(retrofit, method, ClientCall, params) {
-    // 通过retrofit对象和interface method生成ServiceMethod对象
-    let serviceMethod = retrofit.loadServiceMethod(method);
-    console.log(`通过retrofit对象和interface method生成ServiceMethod对象 serviceMethod: ${serviceMethod}`);
-
-    // 构造ClientCall对象
-    let call = ClientCall.$new(serviceMethod, params, retrofit.interceptors.value, retrofit.defInterceptors.value, retrofit.httpExecutor.value, retrofit.cache.value);
-    console.log(`call: ${call}`);
-
-    return call;
-}
-
-/**
- * 调用ClientCall.execute 执行request并获取response
- * */
-function execute(call) {
-    let result = {
-        status: 0,
-        err: null,
-        body: null
-    };
-    try {
-        let response = call.execute();
-        console.log(`response.url: ${response.url()}`);
-        console.log(`response.code: ${response.code()}`);
-        console.log(`response.message: ${response.message()}`);
-        console.log(`response.body: ${toJson(response.body())}`);
-        result.status = 1;
-        result.body = toJson(response);
-    } catch (err) {
-        console.log(err);
-        result.err = err;
-    }
 
     return result;
 }
@@ -487,7 +487,7 @@ function getPoiInfo(poi_id) {
 
 /**
  *
- * 优惠券信息
+ * 代金券信息
  * **/
 function getVoucherCouponList(poi_id) {
     let result;
@@ -550,7 +550,7 @@ function getVoucherCouponList(poi_id) {
 
 /**
  *
- * 优惠券信息
+ * 最新门店id信息
  * **/
 function getPopupMenu(poi_id) {
     let result;
@@ -847,15 +847,257 @@ function getComments(poi_id, page_offset) {
     return result;
 }
 
+/**
+ *
+ * 红包列表
+ */
+function getMemberCouponList(poi_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.platform.restaurant.membercoupon.FloatingMemberCouponListClient$Service');
+        console.log("注册FloatingMemberCouponListClient$Service这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getShopMenu method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getMemberCouponList') !== -1) {
+                method = methods[i];
+                console.log(`获取到getMemberCouponList method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getMemberCouponList 所需的参数
+        const biz_type = 0;
+        let params = Java.array('java.lang.Object', [
+            Long.$new(poi_id),
+            Integer.$new(biz_type)
+        ]);
+        console.log(`array: ${params}, array.length: ${params.length}`);
+
+        let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+        result = execute(call);
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 商品详情
+ */
+function getGoodDetail(poi_id, spu_id, sku_id) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册ShopApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getGoodDetail method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getGoodDetail') !== -1) {
+                method = methods[i];
+                console.log(`获取到getGoodDetail method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getGoodDetail 所需的参数
+        try {
+            let map = Java.use('java.util.HashMap').$new.overload().call(Java.use('java.util.HashMap'));
+            map.put('wm_poi_id', poi_id);
+            map.put('spu_id', spu_id);
+            map.put('sku_id', sku_id);
+            map.put('card_info', '');
+
+            let ListIDHelper = Java.use('com.sankuai.waimai.platform.utils.listid.ListIDHelper');
+            let ListIDHelperFactory = Java.use('com.sankuai.waimai.platform.utils.listid.ListIDHelper$a');
+
+            let listIDHelperField = Java.cast(ListIDHelperFactory.class, Class).getDeclaredField("a");
+            listIDHelperField.setAccessible(true);
+
+            let listIDHelper = listIDHelperField.get(null);
+
+            methods = ListIDHelper.class.getDeclaredMethods();
+            let methodB;
+            for (let i = 0; i < methods.length; i++) {
+                if (methods[i].getName().indexOf('b') !== -1) {
+                    methodB = methods[i];
+                    console.log(`获取到ListIDHelper b method: ${methodB}`);
+                    break;
+                }
+            }
+            methodB.setAccessible(true);
+
+            map.put('rank_list_id', methodB.invoke(listIDHelper, null));
+
+            console.log(`map: ${map}`)
+
+            let params = Java.array('java.lang.Object', [
+                map
+            ]);
+            console.log(`array: ${params}, array.length: ${params.length}`);
+
+            let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+            result = execute(call);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    return result;
+}
+
+/**
+ *
+ * 商品详情
+ */
+function getProductsList(poi_id, spu_tag_id, spu_tag_type) {
+    let result;
+    Java.perform(function () {
+        let Object = Java.use('java.lang.Object');
+        let Thread = Java.use('java.lang.Thread');
+        let String = Java.use('java.lang.String');
+        let Integer = Java.use('java.lang.Integer');
+        let Boolean = Java.use('java.lang.Boolean');
+        let Long = Java.use('java.lang.Long');
+        let Double = Java.use('java.lang.Double');
+        let Array = Java.use('java.lang.reflect.Array');
+        const Class = Java.use('java.lang.Class');
+
+        let Retrofit = Java.use('com.sankuai.meituan.retrofit2.Retrofit');
+        let ClientCall = Java.use('com.sankuai.meituan.retrofit2.ClientCall');
+        let Retrofit$Builder = Java.use('com.sankuai.meituan.retrofit2.Retrofit$Builder');
+
+        // 我们将retrofit.c类视为Retrofit的创建器，用来生成Retrofit对象
+        let Retrofit$Creator = Java.use('com.sankuai.waimai.platform.capacity.network.retrofit.c');
+        console.log("将retrofit.c类视为Retrofit的创建器，生成Retrofit对象");
+
+        // 我们需要注册ShopApiService这个interface
+        let ShopApiService = Java.use('com.sankuai.waimai.business.restaurant.base.repository.net.ShopApiService');
+        console.log("注册ShopApiService这个interface");
+
+        // 当类中的方法出现重载时，需要通过.overload().call()的方式来调用
+        let retrofit = Retrofit$Creator.a.overload('java.lang.Class').call(
+            // .overload().call()的第一个参数必须时类本身，也可能时类对象本身，这个需要自己确定。
+            Retrofit$Creator,
+
+            // 注册SCApiService这个interface
+            ShopApiService.class
+        );
+        console.log(`retrofit: ${retrofit}`);
+
+        // 通过getDeclaredMethods找到 ShopApiService.getProductsList method
+        let methods = ShopApiService.class.getDeclaredMethods();
+        let method;
+        for (let i = 0; i < methods.length; i++) {
+            if (methods[i].getName().indexOf('getProductsList') !== -1) {
+                method = methods[i];
+                console.log(`获取到getProductsList method: ${method}`);
+                break;
+            }
+        }
+
+        // 构造 ShopApiService.getProductsList 所需的参数
+        try {
+            let map = Java.use('java.util.HashMap').$new.overload().call(Java.use('java.util.HashMap'));
+            map.put('wm_poi_id', poi_id);
+            map.put("page_index", "0");
+            map.put("spu_tag_id", spu_tag_id);
+            map.put("tag_type", spu_tag_type);
+            map.put("sort_type", '1');
+            map.put("business_type", "0");
+            map.put("allowance_alliance_scenes", null);
+            map.put("ad_activity_flag", null);
+
+
+            let params = Java.array('java.lang.Object', [
+                map
+            ]);
+            console.log(`array: ${params}, array.length: ${params.length}`);
+
+            let call = buildRetrofitCall(retrofit, method, ClientCall, params);
+            result = execute(call);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    return result;
+}
+
 rpc.exports = {
     siua: siua,
     sharkraceid: sharkTraceid,
     searchShop: searchGlobalPage,
     poiList: getChannelPoiList,
     poiInfo: getPoiInfo,
-    couponTip: getVoucherCouponList,
+    voucherList: getVoucherCouponList,
+    redCoupons: getMemberCouponList,
     popupMenu: getPopupMenu,
     availableCoupon: getAvailableCouponTip,
     shopMenu: getShopMenu,
-    listComments: getComments
+    commentList: getComments,
+    goodsDetail: getGoodDetail,
+    spuList: getProductsList
 }

@@ -559,16 +559,16 @@ if (Java.available) {
         //     return this.a(j, i, i2, str, str2, bVar);
         // }
 
-        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
-            .a
-            .overload('long', 'int', 'int', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
-            .implementation = function (j, i, i2, bVar) {
-            console.log(`j: ${j}`);
-            console.log(`i: ${i}`);
-            console.log(`i2: ${i2}`);
-            printStack();
-            return this.a(j, i, i2, bVar);
-        }
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+        //     .a
+        //     .overload('long', 'int', 'int', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+        //     .implementation = function (j, i, i2, bVar) {
+        //     console.log(`j: ${j}`);
+        //     console.log(`i: ${i}`);
+        //     console.log(`i2: ${i2}`);
+        //     printStack();
+        //     return this.a(j, i, i2, bVar);
+        // }
 
         Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
             .b
@@ -612,30 +612,66 @@ if (Java.available) {
             return this.a(str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9)
         }
 
-        Java.use('com.sankuai.waimai.store.base.net.sg.a')
-            .a
-            .overload('long', 'long', 'long', 'java.lang.String', 'java.lang.String', 'com.sankuai.waimai.store.base.net.j')
-            .implementation = function (j, j2, j3, str, str2, jVar) {
-            console.log(`j: ${j}`);
-            console.log(`j2: ${j2}`);
-            console.log(`j3: ${j3}`);
-            console.log(`str: ${str}`);
-            console.log(`str2: ${str2}`);
-            printStack();
-            return this.a(j, j2, j3, str, str2, jVar);
-        }
+        // Java.use('com.sankuai.waimai.store.base.net.sg.a')
+        //     .a
+        //     .overload('long', 'long', 'long', 'java.lang.String', 'java.lang.String', 'com.sankuai.waimai.store.base.net.j')
+        //     .implementation = function (j, j2, j3, str, str2, jVar) {
+        //     console.log(`j: ${j}`);
+        //     console.log(`j2: ${j2}`);
+        //     console.log(`j3: ${j3}`);
+        //     console.log(`str: ${str}`);
+        //     console.log(`str2: ${str2}`);
+        //     printStack();
+        //     return this.a(j, j2, j3, str, str2, jVar);
+        // }
 
-        Java.use('com.sankuai.waimai.business.restaurant.base.repository.preload.RestMenuNetWorkPreLoader')
-            .run
-            .implementation = function (bundle, uri, cVar) {
-            console.log(`bundle: ${bundle}`);
-            console.log(`uri: ${uri}`);
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.preload.RestMenuNetWorkPreLoader')
+        //     .run
+        //     .implementation = function (bundle, uri, cVar) {
+        //     console.log(`bundle: ${bundle}`);
+        //     console.log(`uri: ${uri}`);
+        //
+        //     printStack();
+        //     return this.run(bundle, uri, cVar);
+        // }
 
-            printStack();
-            return this.run(bundle, uri, cVar);
-        }
+        // Java.use('com.sankuai.waimai.platform.restaurant.membercoupon.FloatingMemberCouponListClient')
+        //     .a
+        //     .overload('long', 'int', 'com.sankuai.waimai.platform.restaurant.membercoupon.FloatingMemberCouponListClient$a')
+        //     .implementation = function (j, i, aVar) {
+        //     console.log(`i: ${i}`);
+        //
+        //     printStack();
+        //     return this.a(j, i, aVar);
+        // }
 
+        // Java.use('com.sankuai.waimai.business.restaurant.goodsdetail.network.a')
+        //     .b
+        //     .overload('java.util.Map', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+        //     .implementation = function (map, bVar) {
+        //     console.log(`map: ${map}`);
+        //     printStack();
+        //     return this.b(j, bVar);
+        // }
 
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.preload.FoodDetailNetWorkPreLoader')
+        //     .run
+        //     .implementation = function (bundle, uri, cVar) {
+        //     console.log(`bundle: ${bundle}`);
+        //     console.log(`uri: ${uri}`);
+        //
+        //     printStack();
+        //     return this.run(bundle, uri, cVar);
+        // }
+
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+        //     .a
+        //     .overload('com.sankuai.waimai.business.restaurant.poicontainer.viewblocks.market.model.a$b', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+        //     .implementation = function (bVar, bVar2) {
+        //     console.log(`bVar: ${bVar}`);
+        //     printStack();
+        //     return this.a(bVar, bVar2);
+        // }
     });
 }
 
