@@ -184,43 +184,43 @@ if (Java.available) {
         // Java.use('com.dianping.preload.bridge.PreloadRequestBridge')
         //     .doPreloadRequest
         //     .implementation = function (bVar, jSONObject, bVar2) {
-        //         console.log("----------com.dianping.preload.bridge.PreloadRequestBridge.doPreloadRequest--------------")
-        //         console.log(bVar);
-        //         console.log(toJson(jSONObject));
-        //         console.log(bVar2);
-        //         return this.doPreloadRequest(bVar, jSONObject, bVar2);
-        //     }
+        //     console.log("----------com.dianping.preload.bridge.PreloadRequestBridge.doPreloadRequest--------------")
+        //     console.log(bVar);
+        //     console.log(toJson(jSONObject));
+        //     console.log(bVar2);
+        //     return this.doPreloadRequest(bVar, jSONObject, bVar2);
+        // }
 
         // Java.use('com.dianping.preload.engine.fetch.a')
         //     .a
         //     .overload('com.dianping.preload.commons.network.a', 'com.dianping.preload.engine.fetch.h', 'com.dianping.preload.engine.fetch.g')
         //     .implementation = function (aVar, hVar, gVar) {
-        //         console.log("----------com.dianping.preload.engine.fetch.a.a-----------")
-        //         console.log(aVar);
-        //         console.log(hVar);
-        //         console.log(gVar);
-        //         return this.a(aVar, hVar, gVar);
-        //     }
-
+        //     console.log("----------com.dianping.preload.engine.fetch.a.a-----------")
+        //     console.log(aVar);
+        //     console.log(hVar);
+        //     console.log(gVar);
+        //     return this.a(aVar, hVar, gVar);
+        // }
+        //
         // Java.use('com.dianping.preload.commons.network.c')
         //     .a
         //     .overload('com.dianping.preload.commons.network.a', 'com.dianping.dataservice.f')
         //     .implementation = function (aVar, fVar) {
-        //         console.log("----------com.dianping.preload.commons.network.c-----------")
-        //         console.log(aVar);
-        //         console.log(fVar);
-        //         printStack();
-        //         return this.a(aVar, fVar);
-        //     }
-
+        //     console.log("----------com.dianping.preload.commons.network.c-----------")
+        //     console.log(aVar);
+        //     console.log(fVar);
+        //     printStack();
+        //     return this.a(aVar, fVar);
+        // }
+        //
         // Java.use('com.dianping.apimodel.BaseGetRequestBin')
         //     .a
         //     .overload('com.dianping.dataservice.mapi.f', 'com.dianping.dataservice.f')
         //     .implementation = function (fVar, fVar2) {
-        //         console.log(toJson(fVar.j()));
-        //         // console.log(toJson(fVar2));
-        //         return this.a(fVar, fVar2);
-        //     }
+        //     console.log(toJson(fVar.j()));
+        //     // console.log(toJson(fVar2));
+        //     return this.a(fVar, fVar2);
+        // }
 
         // let YodaResponseListener = Java.use("com.meituan.android.yoda.YodaResponseListener");
         // Java.registerClass({
@@ -298,6 +298,15 @@ if (Java.available) {
         //     return this.innerFetch(jSONObject, bVar, z);
         // }
 
+        // Java.use('com.dianping.picasso.commonbridge.MapiModule')
+        //     .innerPost
+        //     .implementation = function (jSONObject, bVar, z) {
+        //     console.log(jSONObject.toString());
+        //     console.log(jSONObject.optJSONObject("params"));
+        //     printStack();
+        //     return this.innerPost(jSONObject, bVar, z);
+        // }
+
         // Java.use('com.dianping.picassocontroller.jse.c')
         //     .a
         //     .overload('com.dianping.picassocontroller.vc.e', 'java.lang.String', '[Ljava.lang.Object;')
@@ -370,18 +379,41 @@ if (Java.available) {
         //     return this.$init(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         // }
 
-        // Java.use('com.dianping.picasso.commonbridge.MapiModule$3')
-        //     .onRequestFinish
-        //     .overload('com.dianping.dataservice.mapi.f', 'com.dianping.dataservice.mapi.g')
-        //     .implementation = function (fVar, gVar) {
-        //     console.log(this.getClass().getDeclaredMethods());
-        //     console.log('返回');
-        //     console.log(gVar.d())
-        //     // dPObject = Java.cast(gVar.clone().d(), Java.use('com.dianping.archive.DPObject'));
-        //     // console.log(`dPObject: ${dPObject}`);
-        //
-        //     return this.onRequestFinish(fVar, gVar);
-        // }
+        Java.use('com.dianping.picasso.commonbridge.MapiModule$3')
+            .onRequestFinish
+            .overload('com.dianping.dataservice.mapi.f', 'com.dianping.dataservice.mapi.g')
+            .implementation = function (fVar, gVar) {
+            console.log(this.getClass().getDeclaredMethods());
+            console.log('返回');
+            console.log(gVar.d())
+
+            let MapiModule = Java.use('com.dianping.picasso.commonbridge.MapiModule');
+
+            let MapiProtocol = Java.use('com.dianping.dataservice.mapi.impl.e');
+
+            let bytes = MapiProtocol.a
+                .overload("[B")
+                .call(MapiProtocol, gVar.g());
+            let obj = MapiProtocol.b
+                .overload("[B")
+                .call(MapiProtocol, bytes);
+
+            let dPObject = Java.cast(obj, Java.use('com.dianping.archive.DPObject'));
+            let data = dPObject.f
+                .overload('java.lang.String')
+                .call(dPObject, "data");
+
+            console.log(dPObject.f
+                .overload('java.lang.String')
+                .call(dPObject, "datalist"));
+
+            let str = MapiModule.stringFor64(data, dPObject.m.overload('java.lang.String')
+                .call(dPObject, "fuck64kdatalist"));
+
+            console.log(str);
+
+            return this.onRequestFinish(fVar, gVar);
+        }
 
         // Java.use('com.dianping.dataservice.mapi.b')
         //     .b
@@ -447,27 +479,27 @@ if (Java.available) {
         //     return result;
         // }
 
-        Java.use('com.dianping.picasso.commonbridge.MapiModule')
-            .resolveData
-            .overload('com.dianping.archive.DPObject', 'boolean')
-            .implementation = function (dPObject, z) {
-            printStack();
-            let result = this.resolveData(dPObject, z);
-
-            console.log(toJson(result));
-            return result;
-        }
-
-        Java.use('com.dianping.picasso.commonbridge.MapiModule')
-            .resolveData
-            .overload('com.dianping.archive.DPObject', 'boolean', 'int')
-            .implementation = function (dPObject, z, i) {
-            printStack();
-            let result = this.resolveData(dPObject, z, i);
-
-            console.log(toJson(result));
-            return result;
-        }
+        //     Java.use('com.dianping.picasso.commonbridge.MapiModule')
+        //         .resolveData
+        //         .overload('com.dianping.archive.DPObject', 'boolean')
+        //         .implementation = function (dPObject, z) {
+        //         printStack();
+        //         let result = this.resolveData(dPObject, z);
+        //
+        //         console.log(toJson(result));
+        //         return result;
+        //     }
+        //
+        //     Java.use('com.dianping.picasso.commonbridge.MapiModule')
+        //         .resolveData
+        //         .overload('com.dianping.archive.DPObject', 'boolean', 'int')
+        //         .implementation = function (dPObject, z, i) {
+        //         printStack();
+        //         let result = this.resolveData(dPObject, z, i);
+        //
+        //         console.log(toJson(result));
+        //         return result;
+        //     }
     });
 }
 

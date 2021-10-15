@@ -6,21 +6,31 @@ RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 RUN apt-get clean && apt-get update
 
+RUN apt-get install -y nodejs && apt-get install -y npm
+RUN apt-get install -y curl
+RUN npm install -g n
+RUN n stable
+
 RUN apt-get install -y android-tools-adb android-tools-fastboot
+
 RUN apt-get install -y python3 && apt-get install -y python3-pip
+
 RUN apt-get install -y git-core
 
-RUN git clone https://github.com/cbpu/hooker.git
+RUN git clone https://gitee.com/puchaobo_441/hooker.git
 WORKDIR hooker
 RUN pip3 install -r requirements.txt
 
 WORKDIR /
-RUN git clone https://github.com/cbpu/arida.git
+RUN git clone -b dianping https://github.com/cbpu/arida.git
 WORKDIR arida
 RUN pip3 install -r requirements.txt
+RUN npm install @babel/core --save
+RUN npm install  --save
 
-RUN apt-get install -y nodejs && apt-get install -y npm
+EXPOSE 8000
 
+ENV DEVICE=""
 ADD start.sh start.sh
-ENV DEVICE;
-ENTRYPOINT["/arida/start.sh","$DEVICE"]
+RUN chmod 777 start.sh
+ENTRYPOINT ["sh","-c","/arida/start.sh $DEVICE"]
