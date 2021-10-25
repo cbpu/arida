@@ -7,7 +7,11 @@ function toJson(obj) {
     }
 }
 
-let rep = "{}";
+let rep = {
+    status: 0,
+    err: null,
+    data: null
+};
 
 function getReq(base64JsonStr) {
     Java.perform(function () {
@@ -20,11 +24,6 @@ function getReq(base64JsonStr) {
         let Long = Java.use('java.lang.Long');
         let Array = Java.use('java.lang.reflect.Array');
 
-        try {
-
-        } catch (e) {
-            console.log(e);
-        }
 
         // 构造JSON参数
         let JSONObject = Java.use('org.json.JSONObject');
@@ -150,6 +149,7 @@ function getReq(base64JsonStr) {
         let mapiService = DefaultMApiService.$new(context);
         console.log(`构造DefaultMApiService: ${mapiService}`);
 
+        rep
         try {
             let MapiModule = Java.use('com.dianping.picasso.commonbridge.MapiModule');
 
@@ -181,9 +181,10 @@ function getReq(base64JsonStr) {
 
             console.log(str);
 
-            rep = str;
+            rep.data = str;
         } catch (error) {
-            console.log(error);
+            rep.status = 1;
+            rep.err = error;
         }
 
     });

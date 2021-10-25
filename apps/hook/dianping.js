@@ -289,15 +289,15 @@ if (Java.available) {
         //         return this.a(eVar, str, objArr);
         //     }
 
-        // Java.use('com.dianping.picasso.commonbridge.MapiModule')
-        //     .innerFetch
-        //     .implementation = function (jSONObject, bVar, z) {
-        //     console.log(jSONObject.toString());
-        //     console.log(jSONObject.optJSONObject("params"));
-        //     printStack();
-        //     return this.innerFetch(jSONObject, bVar, z);
-        // }
-
+        Java.use('com.dianping.picasso.commonbridge.MapiModule')
+            .innerFetch
+            .implementation = function (jSONObject, bVar, z) {
+            console.log(jSONObject.toString());
+            console.log(jSONObject.optJSONObject("params"));
+            // printStack();
+            return this.innerFetch(jSONObject, bVar, z);
+        }
+        //
         // Java.use('com.dianping.picasso.commonbridge.MapiModule')
         //     .innerPost
         //     .implementation = function (jSONObject, bVar, z) {
@@ -379,41 +379,41 @@ if (Java.available) {
         //     return this.$init(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
         // }
 
-        Java.use('com.dianping.picasso.commonbridge.MapiModule$3')
-            .onRequestFinish
-            .overload('com.dianping.dataservice.mapi.f', 'com.dianping.dataservice.mapi.g')
-            .implementation = function (fVar, gVar) {
-            console.log(this.getClass().getDeclaredMethods());
-            console.log('返回');
-            console.log(gVar.d())
-
-            let MapiModule = Java.use('com.dianping.picasso.commonbridge.MapiModule');
-
-            let MapiProtocol = Java.use('com.dianping.dataservice.mapi.impl.e');
-
-            let bytes = MapiProtocol.a
-                .overload("[B")
-                .call(MapiProtocol, gVar.g());
-            let obj = MapiProtocol.b
-                .overload("[B")
-                .call(MapiProtocol, bytes);
-
-            let dPObject = Java.cast(obj, Java.use('com.dianping.archive.DPObject'));
-            let data = dPObject.f
-                .overload('java.lang.String')
-                .call(dPObject, "data");
-
-            console.log(dPObject.f
-                .overload('java.lang.String')
-                .call(dPObject, "datalist"));
-
-            let str = MapiModule.stringFor64(data, dPObject.m.overload('java.lang.String')
-                .call(dPObject, "fuck64kdatalist"));
-
-            console.log(str);
-
-            return this.onRequestFinish(fVar, gVar);
-        }
+        // Java.use('com.dianping.picasso.commonbridge.MapiModule$3')
+        //     .onRequestFinish
+        //     .overload('com.dianping.dataservice.mapi.f', 'com.dianping.dataservice.mapi.g')
+        //     .implementation = function (fVar, gVar) {
+        //     console.log(this.getClass().getDeclaredMethods());
+        //     console.log('返回');
+        //     console.log(gVar.d())
+        //
+        //     let MapiModule = Java.use('com.dianping.picasso.commonbridge.MapiModule');
+        //
+        //     let MapiProtocol = Java.use('com.dianping.dataservice.mapi.impl.e');
+        //
+        //     let bytes = MapiProtocol.a
+        //         .overload("[B")
+        //         .call(MapiProtocol, gVar.g());
+        //     let obj = MapiProtocol.b
+        //         .overload("[B")
+        //         .call(MapiProtocol, bytes);
+        //
+        //     let dPObject = Java.cast(obj, Java.use('com.dianping.archive.DPObject'));
+        //     let data = dPObject.f
+        //         .overload('java.lang.String')
+        //         .call(dPObject, "data");
+        //
+        //     console.log(dPObject.f
+        //         .overload('java.lang.String')
+        //         .call(dPObject, "datalist"));
+        //
+        //     let str = MapiModule.stringFor64(data, dPObject.m.overload('java.lang.String')
+        //         .call(dPObject, "fuck64kdatalist"));
+        //
+        //     console.log(str);
+        //
+        //     return this.onRequestFinish(fVar, gVar);
+        // }
 
         // Java.use('com.dianping.dataservice.mapi.b')
         //     .b
