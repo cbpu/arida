@@ -357,9 +357,7 @@ function postReq(base64JsonStr) {
             let str = MapiModule.stringFor64(data, dPObject.m.overload('java.lang.String')
                 .call(dPObject, "fuck64kdatalist"));
 
-            console.log(str);
-
-            rep = str;
+            rep.data = str;
         } catch (error) {
             console.log(error);
         }
