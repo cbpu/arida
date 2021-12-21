@@ -570,47 +570,47 @@ if (Java.available) {
         //     return this.a(j, i, i2, bVar);
         // }
 
-        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
-            .b
-            .overload('long', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
-            .implementation = function (j, bVar) {
-            console.log(`j: ${j}`);
-            printStack();
-            return this.a(j, bVar);
-        }
-
-        Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
-            .a
-            .overload(
-                'java.lang.String',
-                'long',
-                'long',
-                'com.sankuai.waimai.business.restaurant.base.repository.model.g',
-                'java.lang.String',
-                'int',
-                'java.lang.String',
-                'java.lang.String',
-                'java.lang.String',
-                'java.lang.String',
-                'java.lang.String',
-                'java.lang.String',
-                'com.sankuai.waimai.business.restaurant.base.repository.net.b',
-                'java.lang.String')
-            .implementation = function (str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9) {
-            console.log(`str: ${str}`);
-            console.log(`j: ${j}`);
-            console.log(`j2: ${j2}`);
-            console.log(`str2: ${str2}`);
-            console.log(`str3: ${str3}`);
-            console.log(`str4: ${str4}`);
-            console.log(`str5: ${str5}`);
-            console.log(`str6: ${str6}`);
-            console.log(`str7: ${str7}`);
-            console.log(`str8: ${str8}`);
-            console.log(`str9: ${str9}`);
-            printStack();
-            return this.a(str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9)
-        }
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+        //     .b
+        //     .overload('long', 'com.sankuai.waimai.business.restaurant.base.repository.net.b')
+        //     .implementation = function (j, bVar) {
+        //     console.log(`j: ${j}`);
+        //     printStack();
+        //     return this.a(j, bVar);
+        // }
+        //
+        // Java.use('com.sankuai.waimai.business.restaurant.base.repository.b')
+        //     .a
+        //     .overload(
+        //         'java.lang.String',
+        //         'long',
+        //         'long',
+        //         'com.sankuai.waimai.business.restaurant.base.repository.model.g',
+        //         'java.lang.String',
+        //         'int',
+        //         'java.lang.String',
+        //         'java.lang.String',
+        //         'java.lang.String',
+        //         'java.lang.String',
+        //         'java.lang.String',
+        //         'java.lang.String',
+        //         'com.sankuai.waimai.business.restaurant.base.repository.net.b',
+        //         'java.lang.String')
+        //     .implementation = function (str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9) {
+        //     console.log(`str: ${str}`);
+        //     console.log(`j: ${j}`);
+        //     console.log(`j2: ${j2}`);
+        //     console.log(`str2: ${str2}`);
+        //     console.log(`str3: ${str3}`);
+        //     console.log(`str4: ${str4}`);
+        //     console.log(`str5: ${str5}`);
+        //     console.log(`str6: ${str6}`);
+        //     console.log(`str7: ${str7}`);
+        //     console.log(`str8: ${str8}`);
+        //     console.log(`str9: ${str9}`);
+        //     printStack();
+        //     return this.a(str, j, j2, gVar, str2, i, str3, str4, str5, str6, str7, str8, bVar, str9)
+        // }
 
         // Java.use('com.sankuai.waimai.store.base.net.sg.a')
         //     .a
@@ -672,6 +672,27 @@ if (Java.available) {
         //     printStack();
         //     return this.a(bVar, bVar2);
         // }
+
+        Java.use('com.sankuai.waimai.mach.manager_new.config.c')
+            .a
+            .overload('com.sankuai.waimai.mach.manager.checkupdate.a', 'com.sankuai.waimai.mach.manager_new.config.c$a')
+            .implementation = function (aVar, aVar2) {
+            console.log(`aVar: ${aVar}`);
+            console.log(`aVar2: ${aVar2}`);
+            printStack();
+            return this.a(aVar, null);
+        }
+
+        Java.use('com.sankuai.waimai.mach.manager_new.config.c')
+            .a
+            .overload('com.sankuai.waimai.mach.manager_new.config.c', 'com.sankuai.waimai.mach.manager.download.update.UpdateResponse')
+            .implementation = function (cVar, updateResponse) {
+            console.log(`bVar: ${cVar}`);
+            console.log(`updateResponse: ${updateResponse}`);
+            printStack();
+            return this.a(cVar, null);
+        }
+
     });
 }
 
